@@ -2,6 +2,7 @@ package com.pluralsight;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.text.Format;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -19,7 +20,6 @@ public class Store {
 
         // Load inventory from the data file (pipe-delimited: id|name|price)
         loadInventory("products.csv", inventory);
-
 
         // Main menu loop
         Scanner scanner = new Scanner(System.in);
@@ -71,6 +71,7 @@ public class Store {
                 double productPrice = Double.parseDouble(product[2]);
                 inventory.add(new Product(productID, productName, productPrice));
             }
+            bf.close();
         } catch (Exception e) {
             System.out.println("Invalid File.");
         }
@@ -85,6 +86,29 @@ public class Store {
                                        Scanner scanner) {
         // TODO: show each product (id, name, price),
         //       prompt for an id, find that product, add to cart
+        boolean continueShopping = true;
+
+        while(continueShopping) {
+            System.out.println(inventory);
+            System.out.print("Enter product ID to Add to your cart: ");
+            String userInput = scanner.nextLine();
+
+            for (Product product : inventory) {
+                if (userInput.equalsIgnoreCase(product.getId())) {
+                    cart.add(product);
+                    System.out.println(product.getName() + " has been added to your cart.");
+                }
+            }
+
+            System.out.println("Would you like to continue shopping? Enter \"Y\" to continue: ");
+            userInput = scanner.nextLine();
+            if(!userInput.equalsIgnoreCase("y")){
+                continueShopping = false;
+            }
+        }
+
+
+
     }
 
     /**
@@ -97,6 +121,21 @@ public class Store {
         //   • compute the total cost
         //   • ask the user whether to check out (C) or return (X)
         //   • if C, call checkOut(cart, totalAmount, scanner)
+
+        System.out.println(cart);
+        double cartTotal = 0;
+        for (Product product : cart) {
+            cartTotal += product.getPrice();
+        }
+        System.out.printf("Total price = $%.2f", cartTotal);
+        System.out.println("Would you like to checkout or return to main menu? \"C\" - Checkout, \"R\" - Return: ");
+        String userInput = scanner.nextLine();
+
+        if(userInput.equalsIgnoreCase("c")){
+            checkOut(cart, cartTotal, scanner);
+        } else {
+            System.out.println("Returning to Main Menu");
+        }
     }
 
     /**
