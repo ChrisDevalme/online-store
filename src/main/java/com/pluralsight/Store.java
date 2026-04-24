@@ -2,7 +2,6 @@ package com.pluralsight;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.text.Format;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -92,12 +91,13 @@ public class Store {
             System.out.println(inventory);
             System.out.print("Enter product ID to Add to your cart: ");
             String userInput = scanner.nextLine();
+            Product product = findProductById(userInput, inventory);
 
-            for (Product product : inventory) {
-                if (userInput.equalsIgnoreCase(product.getId())) {
-                    cart.add(product);
-                    System.out.println(product.getName() + " has been added to your cart.");
-                }
+            if ( product!= null ) {
+                cart.add(product);
+                System.out.println(product.getName() + " has been added to your cart.");
+            } else {
+                System.out.println(userInput + " Not found.");
             }
 
             System.out.println("Would you like to continue shopping? Enter \"Y\" to continue: ");
@@ -127,7 +127,7 @@ public class Store {
         for (Product product : cart) {
             cartTotal += product.getPrice();
         }
-        System.out.printf("Total price = $%.2f", cartTotal);
+        System.out.printf("Total price = $%.2f\n", cartTotal);
         System.out.println("Would you like to checkout or return to main menu? \"C\" - Checkout, \"R\" - Return: ");
         String userInput = scanner.nextLine();
 
@@ -149,6 +149,26 @@ public class Store {
                                 double totalAmount,
                                 Scanner scanner) {
         // TODO: implement steps listed above
+        System.out.println("Are you finished with your order? Enter \"C\" to confim Checkout: ");
+        String userInput = scanner.nextLine();
+
+        if(userInput.equalsIgnoreCase("c")) {
+            System.out.printf("Your total is: $%.2f\n",  totalAmount);
+            System.out.print("How much cash do you have? ");
+            double userCash = scanner.nextDouble();
+            if(userCash > totalAmount) {
+                double userChange = userCash - totalAmount;
+                System.out.printf("Your change is: $%.2f\n", userChange);
+                System.out.println("Sales Receipt: ");
+                System.out.println("Items Purchased: \n" + cart);
+                System.out.printf("Total cart price: $%.2f\n", totalAmount);
+                System.out.printf("Total cash provided from customer: $%.2f\n", userCash);
+                System.out.printf("Change returned to customer: $%.2f\n ", userChange);
+                cart.clear();
+            } else {
+                System.out.println("You dont have enough cash to cover your order. ");
+            }
+        }
     }
 
     /**
@@ -158,6 +178,11 @@ public class Store {
      */
     public static Product findProductById(String id, ArrayList<Product> inventory) {
         // TODO: loop over the list and compare ids
+        for (Product product : inventory) {
+            if (id.equalsIgnoreCase(product.getId())) {
+                return product;
+            }
+        }
         return null;
     }
 }
