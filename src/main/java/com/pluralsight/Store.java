@@ -154,19 +154,23 @@ public class Store {
 
         if(userInput.equalsIgnoreCase("c")) {
             System.out.printf("Your total is: $%.2f\n",  totalAmount);
-            System.out.print("How much cash do you have? ");
-            double userCash = scanner.nextDouble();
-            if(userCash > totalAmount) {
-                double userChange = userCash - totalAmount;
-                System.out.printf("Your change is: $%.2f\n", userChange);
-                System.out.println("Sales Receipt: ");
-                System.out.println("Items Purchased: \n" + cart);
-                System.out.printf("Total cart price: $%.2f\n", totalAmount);
-                System.out.printf("Total cash provided from customer: $%.2f\n", userCash);
-                System.out.printf("Change returned to customer: $%.2f\n ", userChange);
-                cart.clear();
-            } else {
-                System.out.println("You dont have enough cash to cover your order. ");
+            boolean enoughCash = false;
+            while(!enoughCash) {
+                System.out.print("How much cash do you have? ");
+                double userCash = scanner.nextDouble();
+                if (userCash > totalAmount) {
+                    enoughCash = true;
+                    double userChange = userCash - totalAmount;
+                    System.out.printf("Your change is: $%.2f\n", userChange);
+                    System.out.println("Sales Receipt: ");
+                    System.out.println("Items Purchased: \n" + cart);
+                    System.out.printf("Total cart price: $%.2f\n", totalAmount);
+                    System.out.printf("Total cash provided from customer: $%.2f\n", userCash);
+                    System.out.printf("Change returned to customer: $%.2f\n ", userChange);
+                    cart.clear();
+                } else {
+                    System.out.println("You dont have enough cash to cover your order. Please add cash to complete your order.");
+                }
             }
         }
     }
